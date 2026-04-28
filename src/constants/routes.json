@@ -1,0 +1,56 @@
+{
+  "USER": {
+    "REGISTER": "/users/register",
+    "LOGIN": "/users/login",
+    "LOGOUT": "/users/logout",
+    "GET_ME": "/users/me",
+    "UPDATE_DETAILS": "/users/update-details",
+    "CHANGE_PASSWORD": "/users/change-password",
+    "FORGOT_PASSWORD": "/users/forgot-password",
+    "GET_ALL_USERS": "/users/all-users",
+    "SET_OWNER": "/users/set-owner"
+  },
+  "HOTEL": {
+    "GET_ALL": "/hotels/all",
+    "GET_BY_ID": "/hotels/:hotelId",
+    "GET_BY_SLUG": "/hotels/slug/:slug",
+    "CREATE": "/hotels/create",
+    "UPDATE": "/hotels/update/:hotelId",
+    "DELETE": "/hotels/delete/:hotelId",
+    "SEARCH": "/hotels/search"
+  },
+  "ROOM": {
+    "CREATE": "/rooms/create",
+    "DELETE": "/rooms/delete/:roomId",
+    "UPDATE": "/rooms/update/:roomId",
+    "GET_BY_ID": "/rooms/:roomId",
+    "GET_BY_HOTEL": "/rooms/hotel/:hotelId",
+    "TOGGLE_ROOM_AVAILABILITY": "/rooms/:roomId/toggle-room-availability",
+    "ADD_IMAGES": "/rooms/:roomId/add-images",
+    "REMOVE_IMAGES": "/rooms/:roomId/remove-images"
+  },
+  "BOOKING": {
+    "CREATE_BOOKING": "/bookings/create-booking",
+    "GET_MY_BOOKINGS": "/bookings/my-bookings",
+    "GET_BY_ID": "/bookings/:bookingId",
+    "CANCEL": "/bookings/cancel/:bookingId",
+    "GET_ALL": "/bookings/all-bookings",
+    "UPDATE_STATUS": "/bookings/update-status/:bookingId"
+  },
+  "REVIEW": {
+    "ADD": "/reviews/:hotelId/add",
+    "REMOVE": "/reviews/remove/:reviewId",
+    "GET_BY_HOTEL": "/reviews/:hotelId/reviews"
+  },
+  "PAYMENT": {
+    "VERIFY": "/payments/verify",
+    "GET_KEY": "/payments/razorpaykey"
+  },
+  "AI": {
+    "SEARCH": "/ai/search",
+    "BUDGET": "/ai/budget",
+    "CHAT": "/ai/chat",
+    "REVIEW_SUMMARY": "/ai/review-summary",
+    "LISTING": "/ai/listing"
+  }
+}
