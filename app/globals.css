@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Colors — NestIQ dark void design system */
+  --color-void: #000000;
+  --color-near-white: #f0f0f0;
+  --color-white: #ffffff;
+  --color-silver: #a1a4a5;
+  --color-muted: #464a4d;
+
+  /* Frost borders */
+  --color-frost: rgba(214, 235, 253, 0.19);
+  --color-frost-alt: rgba(217, 237, 254, 0.145);
+
+  /* Accents */
+  --color-orange: #ff801f;
+  --color-orange-light: #ffa057;
+  --color-orange-glow: rgba(255, 128, 31, 0.15);
+  --color-green: #11ff99;
+  --color-green-glow: rgba(17, 255, 153, 0.12);
+  --color-blue: #3b9eff;
+  --color-blue-glow: rgba(59, 158, 255, 0.12);
+  --color-yellow: #ffc53d;
+  --color-red: #ff2047;
+  --color-red-glow: rgba(255, 32, 71, 0.12);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: #000000;
+    color: #f0f0f0;
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: rgba(255, 128, 31, 0.25);
+    color: #ffffff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(214, 235, 253, 0.19);
+    border-radius: 9999px;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-mono-nest {
+    font-family: var(--font-mono);
+  }
+
+  /* Frost border utility */
+  .border-frost {
+    border-color: rgba(214, 235, 253, 0.19);
+  }
+  .border-frost-alt {
+    border-color: rgba(217, 237, 254, 0.145);
+  }
+
+  /* Ring shadow utility */
+  .ring-frost {
+    box-shadow: rgba(176, 199, 217, 0.145) 0px 0px 0px 1px;
+  }
+
+  /* Glow utilities */
+  .glow-orange {
+    box-shadow: 0 0 60px rgba(255, 128, 31, 0.15);
+  }
+  .glow-blue {
+    box-shadow: 0 0 60px rgba(59, 158, 255, 0.12);
+  }
+
+  /* Text gradients */
+  .text-gradient-orange {
+    background: linear-gradient(135deg, #ff801f, #ffa057);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Backdrop blur card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(214, 235, 253, 0.19);
+  }
+}
