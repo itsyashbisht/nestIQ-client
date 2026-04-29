@@ -258,7 +258,7 @@ function ReviewModal({
           Write a Review
         </h3>
         <p className="text-[13px] text-[#a1a4a5] mb-5">
-          {booking.hotelId.name}
+          {booking?.hotelId?.name}
         </p>
 
         {/* Stars */}
@@ -333,9 +333,11 @@ function ReviewModal({
 export default function BookingsClient() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { bookings, listStatus, cancelStatus } = useAppSelector(
-    (s) => s.booking,
-  );
+  const {
+    myBookings: bookings,
+    listStatus,
+    cancelStatus,
+  } = useAppSelector((s) => s.booking);
   const { user, isInitialized } = useAppSelector((s) => s.auth);
 
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
