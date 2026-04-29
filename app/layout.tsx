@@ -5,6 +5,7 @@ import { ReduxProvider } from "@/components/ReduxProvider";
 import SessionProvider from "@/components/SessionProvider";
 import React from "react";
 import NavigationWrapper from "@/components/NavigationWrapper";
+import { ToastContainer } from "react-toastify";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <SessionProvider>
+            <ToastContainer />
             {/* NavigationWrapper reads pathname and hides nav on auth routes */}
             <NavigationWrapper />
             <main>{children}</main>

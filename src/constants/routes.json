@@ -30,7 +30,7 @@
     "REMOVE_IMAGES": "/rooms/:roomId/remove-images"
   },
   "BOOKING": {
-    "CREATE_BOOKING": "/bookings/create-booking",
+    "CREATE_BOOKING": "/bookings/new",
     "GET_MY_BOOKINGS": "/bookings/my-bookings",
     "GET_BY_ID": "/bookings/:bookingId",
     "CANCEL": "/bookings/cancel/:bookingId",

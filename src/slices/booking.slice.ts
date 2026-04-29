@@ -17,11 +17,13 @@ interface BookingState {
   allBookings: IBooking[];
   total: number;
   page: number;
+  razorpayOrderId: any;
 }
 
 const initialState: BookingState = {
   loading: false,
   error: null,
+  razorpayOrderId: "",
   booking: null,
   myBookings: [],
   allBookings: [],
@@ -83,11 +85,14 @@ const bookingSlice = createSlice({
     builder
       .addCase(createBooking.pending, (state) => {
         state.loading = true;
+        state.booking = null;
+        state.razorpayOrderId = null;
         state.error = null;
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.loading = false;
         state.booking = action.payload.booking;
+        state.razorpayOrderId = action.payload.razorpayOrderId;
         state.myBookings = upsertBookingInList(
           state.myBookings,
           action.payload.booking,

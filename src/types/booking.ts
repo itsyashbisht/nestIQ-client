@@ -1,7 +1,7 @@
-import { IHotel } from './hotel';
-import { IRoom } from './room';
+import { IHotel } from "./hotel";
+import { IRoom } from "./room";
 
-export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+export type BookingStatus = "pending" | "confirmed" | "cancelled" | "completed";
 
 /**
  * A room as stored inside a booking — price is a snapshot at booking time.
@@ -69,28 +69,31 @@ export interface CreateBookingResponse {
 /**
  * What getMyBookings returns — hotelId is always populated
  */
-export interface IBookingWithHotel extends Omit<IBooking, 'hotelId'> {
-  hotelId: Pick<IHotel, '_id' | 'name' | 'city' | 'state' | 'images' | 'rating' | 'slug'>;
-  rooms: (Omit<IBookedRoom, 'roomId'> & {
-    roomId: Pick<IRoom, '_id' | 'name' | 'type'>;
+export interface IBookingWithHotel extends Omit<IBooking, "hotelId"> {
+  hotelId: Pick<
+    IHotel,
+    "_id" | "name" | "city" | "state" | "images" | "rating" | "slug"
+  >;
+  rooms: (Omit<IBookedRoom, "roomId"> & {
+    roomId: Pick<IRoom, "_id" | "name" | "type">;
   })[];
 }
 
-export interface IBookingDetail extends Omit<IBooking, 'hotelId'> {
+export interface IBookingDetail extends Omit<IBooking, "hotelId"> {
   hotelId: Pick<
     IHotel,
-    | '_id'
-    | 'name'
-    | 'city'
-    | 'state'
-    | 'images'
-    | 'rating'
-    | 'slug'
-    | 'checkInTime'
-    | 'checkOutTime'
+    | "_id"
+    | "name"
+    | "city"
+    | "state"
+    | "images"
+    | "rating"
+    | "slug"
+    | "checkInTime"
+    | "checkOutTime"
   >;
-  rooms: (Omit<IBookedRoom, 'roomId'> & {
-    roomId: Pick<IRoom, '_id' | 'name' | 'type' | 'pricePerNight'>;
+  rooms: (Omit<IBookedRoom, "roomId"> & {
+    roomId: Pick<IRoom, "_id" | "name" | "type" | "pricePerNight">;
   })[];
 }
 
