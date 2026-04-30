@@ -15,16 +15,32 @@ interface HotelChatProps {
 const SUGGESTIONS = [
   "Is breakfast included?",
   "What's the check-in time?",
+  "What's the check-out time?",
   "Do you allow pets?",
   "Nearby restaurants?",
 ];
 
-export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProps) {
+export default function HotelChat({
+  hotelId,
+  hotelName,
+  onClose,
+}: HotelChatProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, setInput } = useChat({
-    api: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ai/chat`,
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    setInput,
+  } = useChat({
+    api: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/nestiq-ai/chat`,
     body: { hotelId },
+    streamMode: "text",
+    onError: (err) => {
+      console.error("Chat error:", err);
+    },
     initialMessages: [
       {
         id: "welcome",
@@ -33,6 +49,8 @@ export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProp
       },
     ],
   });
+
+  console.log(messages);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -57,14 +75,19 @@ export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProp
           <Bot size={14} className="text-[#3b9eff]" />
         </motion.div>
         <div className="flex-1">
-          <div className="text-[13px] font-medium text-[#f0f0f0]">Ask about {hotelName}</div>
+          <div className="text-[13px] font-medium text-[#f0f0f0]">
+            Ask about {hotelName}
+          </div>
           <div className="flex items-center gap-1.5 text-[10px] text-[#3b9eff]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3b9eff] inline-block animate-pulse" />
             Powered by Groq · Llama 3.1
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="text-[#464a4d] hover:text-[#a1a4a5] transition-colors">
+          <button
+            onClick={onClose}
+            className="text-[#464a4d] hover:text-[#a1a4a5] transition-colors"
+          >
             <X size={14} />
           </button>
         )}
@@ -79,7 +102,10 @@ export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProp
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25 }}
-              className={cn("flex", msg.role === "user" ? "justify-end" : "justify-start")}
+              className={cn(
+                "flex",
+                msg.role === "user" ? "justify-end" : "justify-start",
+              )}
             >
               {msg.role === "assistant" && (
                 <div className="w-5 h-5 rounded-full bg-[rgba(59,158,255,0.2)] flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
@@ -91,7 +117,7 @@ export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProp
                   "max-w-[82%] px-3.5 py-2.5 rounded-xl text-[13px] leading-relaxed",
                   msg.role === "user"
                     ? "bg-[rgba(255,255,255,0.07)] border border-[rgba(214,235,253,0.19)] text-[#f0f0f0] rounded-br-sm"
-                    : "bg-[rgba(59,158,255,0.08)] border border-[rgba(59,158,255,0.2)] text-[#f0f0f0] rounded-bl-sm"
+                    : "bg-[rgba(59,158,255,0.08)] border border-[rgba(59,158,255,0.2)] text-[#f0f0f0] rounded-bl-sm",
                 )}
               >
                 {msg.content}
@@ -101,14 +127,22 @@ export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProp
         </AnimatePresence>
 
         {isLoading && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-start"
+          >
             <div className="flex gap-1.5 px-3.5 py-3 rounded-xl bg-[rgba(59,158,255,0.08)] border border-[rgba(59,158,255,0.2)]">
               {[0, 1, 2].map((i) => (
                 <motion.span
                   key={i}
                   className="w-1.5 h-1.5 rounded-full bg-[#3b9eff]"
                   animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1, 0.8] }}
-                  transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }}
                 />
               ))}
             </div>
@@ -135,7 +169,10 @@ export default function HotelChat({ hotelId, hotelName, onClose }: HotelChatProp
       )}
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="flex gap-2 p-3 border-t border-[rgba(59,158,255,0.1)]">
+      <form
+        onSubmit={handleSubmit}
+        className="flex gap-2 p-3 border-t border-[rgba(59,158,255,0.1)]"
+      >
         <input
           value={input}
           onChange={handleInputChange}
