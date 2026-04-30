@@ -32,7 +32,28 @@ import type { IRoom } from "@/types/room";
 import { getRoomsByHotelId } from "@/thunks/room.thunk";
 
 // ─── Mock fallbacks ─────────────────────────────────────────────────────────
-const MOCK_HOTEL: IHotel = {
+const MOCK_HOTEL: {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  city: string;
+  state: string;
+  address: string;
+  category: string;
+  vibes: string[];
+  amenities: string[];
+  images: any[];
+  startingFrom: number;
+  rating: number;
+  reviewCount: number;
+  isActive: boolean;
+  checkInTime: string;
+  checkOutTime: string;
+  nearbyAttractions: string[];
+  createdAt: string;
+  updatedAt: string;
+} = {
   _id: "h1",
   name: "The Coral Nest",
   slug: "coral-nest",
@@ -545,10 +566,11 @@ interface Props {
 export default function HotelDetailClient({ slug }: Props) {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { hotel: currentHotel, roomsStatus } = useAppSelector((s) => s.hotel);
-  const { rooms: currentHotelRooms, status } = useAppSelector((s) => s.room);
+  const { hotel: currentHotel } = useAppSelector((s) => s.hotel);
+  const { rooms: currentHotelRooms, status: roomsStatus } = useAppSelector(
+    (s) => s.room,
+  );
   const { user } = useAppSelector((s) => s.auth);
-  console.log(currentHotelRooms);
 
   const hotel: IHotel = currentHotel ?? MOCK_HOTEL;
   console.log(hotel);

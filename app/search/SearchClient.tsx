@@ -11,11 +11,11 @@ import {
   X,
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
-import { getAllHotels, searchHotels } from "@/thunks/hotel.thunk";
+import { getAllHotels } from "@/thunks/hotel.thunk";
+import { aiSearch } from "@/thunks/ai.thunk";
 import HotelCard from "@/components/HotelCard";
-import type { IHotel } from "@/types/hotel";
 
-// ─── Constants aligned with Hotel schema enums ─────────────────────────
+// Constants aligned with Hotel schema enums
 const CATEGORIES = ["budget", "comfort", "luxury", "boutique"] as const;
 const VIBES = [
   "romantic",
@@ -27,148 +27,12 @@ const VIBES = [
 ] as const;
 const SORT_OPTIONS = [
   "Best Match",
-  "Price: Low → High",
-  "Price: High → Low",
+  "Price: Low -> High",
+  "Price: High -> Low",
   "Rating: Highest",
 ];
 
-// ─── Demo data (renders when backend not connected) ────────────────────
-const MOCK_HOTELS: IHotel[] = [
-  {
-    _id: "1",
-    name: "Rajputana Palace & Spa",
-    slug: "rajputana-palace",
-    description: "Heritage luxury in Jaipur.",
-    city: "Jaipur",
-    state: "Rajasthan",
-    address: "City Palace Rd",
-    category: "luxury",
-    vibes: ["romantic"],
-    amenities: [],
-    images: [],
-    pricePerNight: 8500,
-    rating: 4.9,
-    reviewCount: 312,
-    isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-  {
-    _id: "2",
-    name: "The Coral Nest",
-    slug: "coral-nest",
-    description: "Beachfront boutique.",
-    city: "North Goa",
-    state: "Goa",
-    address: "Calangute Beach",
-    category: "boutique",
-    vibes: ["romantic", "wellness"],
-    amenities: [],
-    images: [],
-    pricePerNight: 5200,
-    rating: 4.8,
-    reviewCount: 198,
-    isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-  {
-    _id: "3",
-    name: "Misty Valley Resort",
-    slug: "misty-valley",
-    description: "Nature stay in Kerala.",
-    city: "Munnar",
-    state: "Kerala",
-    address: "Tea Garden Rd",
-    category: "comfort",
-    vibes: ["family", "wellness"],
-    amenities: [],
-    images: [],
-    pricePerNight: 3800,
-    rating: 4.7,
-    reviewCount: 245,
-    isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-  {
-    _id: "4",
-    name: "Urban Nest Mumbai",
-    slug: "urban-nest",
-    description: "Modern city hotel.",
-    city: "Mumbai",
-    state: "Maharashtra",
-    address: "Bandra West",
-    category: "comfort",
-    vibes: ["business", "solo"],
-    amenities: [],
-    images: [],
-    pricePerNight: 4200,
-    rating: 4.5,
-    reviewCount: 178,
-    isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-  {
-    _id: "5",
-    name: "Backpacker's Den",
-    slug: "backpackers-den",
-    description: "Budget stays.",
-    city: "Rishikesh",
-    state: "Uttarakhand",
-    address: "Laxman Jhula",
-    category: "budget",
-    vibes: ["adventure", "solo"],
-    amenities: [],
-    images: [],
-    pricePerNight: 900,
-    rating: 4.3,
-    reviewCount: 512,
-    isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-  {
-    _id: "6",
-    name: "Casa Verde Goa",
-    slug: "casa-verde",
-    description: "Poolside boutique.",
-    city: "Anjuna",
-    state: "Goa",
-    address: "Anjuna Beach",
-    category: "boutique",
-    vibes: ["romantic", "adventure"],
-    amenities: [],
-    images: [],
-    pricePerNight: 4800,
-    rating: 4.7,
-    reviewCount: 134,
-    isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
-  },
-];
-
-// ─── Skeleton card ─────────────────────────────────────────────────────
+// Skeleton card
 function SkeletonCard({ i }: { i: number }) {
   return (
     <div className="rounded-2xl border border-[rgba(214,235,253,0.19)] overflow-hidden">
@@ -197,9 +61,10 @@ export default function SearchClient() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { hotels, searchStatus, listStatus, aiInsight, total } = useAppSelector(
+  const { hotels, searchStatus, status, aiInsight } = useAppSelector(
     (s) => s.hotel,
   );
+  console.log(hotels);
 
   // ── form state ──────────────────────────────────────────────────────
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
@@ -212,7 +77,7 @@ export default function SearchClient() {
   const [minGuests, setMinGuests] = useState(1);
   const [sort, setSort] = useState("Best Match");
 
-  const isLoading = searchStatus === "loading" || listStatus === "loading";
+  const isLoading = searchStatus === "loading" || status === "loading";
 
   // ── initial load ────────────────────────────────────────────────────
   useEffect(() => {
@@ -220,19 +85,19 @@ export default function SearchClient() {
     const cat = searchParams.get("category");
     if (q) {
       setQuery(q);
-      dispatch(searchHotels(q));
+      dispatch(aiSearch(q));
     } else if (cat) {
       setSelCats([cat]);
       dispatch(getAllHotels({ category: cat }));
     } else {
       dispatch(getAllHotels({}));
     }
-  }, []); // eslint-disable-line
+  }, []);
 
   // ── search ──────────────────────────────────────────────────────────
   const handleSearch = () => {
     if (query.trim()) {
-      dispatch(searchHotels(query));
+      dispatch(aiSearch(query));
     } else {
       dispatch(
         getAllHotels({
@@ -247,17 +112,17 @@ export default function SearchClient() {
     set(arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val]);
 
   // ── client-side filter + sort on displayed list ──────────────────────
-  const base = hotels.length > 0 ? hotels : MOCK_HOTELS;
+  const base = hotels;
   const filtered = base
     .filter((h) => selCats.length === 0 || selCats.includes(h.category))
     .filter(
       (h) => selVibes.length === 0 || h.vibes.some((v) => selVibes.includes(v)),
     )
-    .filter((h) => h.pricePerNight <= maxPrice);
+    .filter((h) => h.startingFrom <= maxPrice);
 
   const sorted = [...filtered].sort((a, b) => {
-    if (sort === "Price: Low → High") return a.pricePerNight - b.pricePerNight;
-    if (sort === "Price: High → Low") return b.pricePerNight - a.pricePerNight;
+    if (sort === "Price: Low -> High") return a.startingFrom - b.startingFrom;
+    if (sort === "Price: High -> Low") return b.startingFrom - a.startingFrom;
     if (sort === "Rating: Highest") return b.rating - a.rating;
     return 0;
   });
@@ -536,6 +401,7 @@ export default function SearchClient() {
                 hotel={hotel}
                 variant="default"
                 index={i}
+                lowestRoomPrice={hotel?.startingFrom}
               />
             ))}
           </motion.div>

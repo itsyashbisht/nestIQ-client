@@ -30,11 +30,9 @@ export function BookingClient() {
   const { user } = useAppSelector((s) => s.auth);
   const { openCheckout, paying } = useRazorpayCheckout();
   const { hotel, status } = useAppSelector((s) => s.hotel);
-  const {
-    booking: currentBooking,
-    razorpayOrderId,
-    createStatus,
-  } = useAppSelector((s) => s.booking);
+  const { booking: currentBooking, createStatus } = useAppSelector(
+    (s) => s.booking,
+  );
   const { razorpayKeyId, keyStatus } = useAppSelector((s) => s.payment);
   const { room } = useAppSelector((s) => s.room);
 
