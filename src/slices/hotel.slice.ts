@@ -10,6 +10,7 @@ import {
   searchHotels,
   updateHotel,
 } from "@/thunks/hotel.thunk";
+import { aiSearch } from "@/thunks/ai.thunk";
 
 type HotelStatus = "idle" | "loading" | "succeeded" | "failed";
 
@@ -20,6 +21,8 @@ interface HotelState {
   filters: SearchFilters;
   status: HotelStatus;
   error: string | null;
+  aiInsight: string | null;
+  searchStatus: HotelStatus;
 }
 
 const initialFilters: SearchFilters = {
@@ -41,6 +44,8 @@ const initialState: HotelState = {
   filters: initialFilters,
   status: "idle",
   error: null,
+  aiInsight: null,
+  searchStatus: "idle",
 };
 
 const getErrorMessage = (payload: unknown): string =>
@@ -86,6 +91,20 @@ const hotelSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(aiSearch.pending, (state) => {
+        state.searchStatus = "loading";
+        state.aiInsight = null;
+      })
+      .addCase(aiSearch.fulfilled, (state, action) => {
+        state.searchStatus = "succeeded";
+        state.hotels = action.payload.hotels;
+        state.aiInsight = action.payload.aiInsight;
+      })
+      .addCase(aiSearch.rejected, (state, action) => {
+        state.searchStatus = "failed";
+        state.error = getErrorMessage(action.payload);
+      })
+
       .addCase(getAllHotels.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -93,6 +112,7 @@ const hotelSlice = createSlice({
       .addCase(getAllHotels.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.hotels = action.payload.hotels;
+        console.log(action.payload.hotels);
       })
       .addCase(getAllHotels.rejected, (state, action) => {
         state.status = "failed";

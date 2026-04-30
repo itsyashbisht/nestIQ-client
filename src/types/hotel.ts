@@ -32,6 +32,7 @@ export interface IHotel {
   category: HotelCategory;
   vibes: HotelVibe[];
   pricePerNight: number;
+  startingFrom: number;
   rating: number;
   reviewCount: number;
   ownerId: string;
@@ -47,17 +48,7 @@ export interface GetAllHotelsParams {
   sortBy?: string;
   limit?: number;
   page?: number;
-}
-
-export interface SearchHotelsRequest {
-  city: string;
-  category: string;
-  vibe: HotelVibe;
-  minPrice: number;
-  maxPrice: number;
-  sortBy?: string;
-  limit?: number;
-  page?: number;
+  category?: string;
 }
 
 export interface CreateHotelRequest {
@@ -70,7 +61,7 @@ export interface CreateHotelRequest {
   category: HotelCategory;
   vibes: HotelVibe[];
   amenities: string[];
-  pricePerNight: number;
+  startingFrom: number;
   nearbyAttractions: string[];
   checkInTime: string;
   checkOutTime: string;
@@ -87,7 +78,7 @@ export interface UpdateHotelRequest {
     category: HotelCategory;
     vibes: HotelVibe[];
     amenities: string[];
-    pricePerNigh: number;
+    startingFrom: number;
     nearbyAttractions: string[];
     checkInTime: string;
     checkOutTime: string;
