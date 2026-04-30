@@ -47,10 +47,10 @@
     "GET_KEY": "/payments/razorpaykey"
   },
   "AI": {
-    "SEARCH": "/ai/search",
-    "BUDGET": "/ai/budget",
-    "CHAT": "/ai/chat",
-    "REVIEW_SUMMARY": "/ai/review-summary",
-    "LISTING": "/ai/listing"
+    "SEARCH": "/nestiq-ai/search",
+    "BUDGET": "/nestiq-ai/budget",
+    "CHAT": "/nestiq-ai/chat",
+    "REVIEW_SUMMARY": "/nestiq-ai/review-summary",
+    "LISTING": "/nestiq-ai/listing"
   }
 }

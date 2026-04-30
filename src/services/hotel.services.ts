@@ -1,10 +1,6 @@
 import REQUEST from "@/lib/axios";
 import ROUTES from "../constants/routes.json";
-import {
-  GetAllHotelsParams,
-  SearchHotelsRequest,
-  UpdateHotelRequest,
-} from "@/types/hotel";
+import { GetAllHotelsParams, UpdateHotelRequest } from "@/types/hotel";
 
 export const hotelService = {
   getAllHotels(params?: GetAllHotelsParams) {
@@ -22,7 +18,7 @@ export const hotelService = {
   },
 
   // AI natural language search — POST with query string
-  searchHotels(query: SearchHotelsRequest) {
+  searchHotels(query: string) {
     return REQUEST.post(ROUTES.HOTEL.SEARCH, { query });
   },
 
