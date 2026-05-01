@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import ROUTES from "@/constants/routes.json";
 import { useChat } from "ai/react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -76,6 +77,8 @@ export default function ConciergeClient() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const apiUrl = `${API_URL}/api/v1${ROUTES.AI.CONCIERGE}`;
+
   const {
     messages,
     input,
@@ -85,7 +88,7 @@ export default function ConciergeClient() {
     setInput,
     setMessages,
   } = useChat({
-    api: `${API_URL}/api/v1/nestiq-ai/concierge`,
+    api: apiUrl,
     streamMode: "text",
     onError: (err) => console.error("Chat error:", err),
   });
@@ -136,7 +139,7 @@ export default function ConciergeClient() {
                   animate={{ opacity: [1, 0.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                Groq AI · Llama 3.1-70b · Streaming
+                NestIQ AI · Streaming
               </div>
             </div>
           </div>

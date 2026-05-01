@@ -80,7 +80,7 @@ export default function HotelChat({
           </div>
           <div className="flex items-center gap-1.5 text-[10px] text-[#3b9eff]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3b9eff] inline-block animate-pulse" />
-            Powered by Groq · Llama 3.1
+            Powered by NestIQ · Streaming
           </div>
         </div>
         {onClose && (
