@@ -47,6 +47,7 @@
     "GET_KEY": "/payments/razorpaykey"
   },
   "AI": {
+    "CONCIERGE": "/nestiq-ai/concierge",
     "SEARCH": "/nestiq-ai/search",
     "BUDGET": "/nestiq-ai/budget",
     "CHAT": "/nestiq-ai/chat",
