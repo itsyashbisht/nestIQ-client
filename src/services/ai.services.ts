@@ -18,14 +18,6 @@ export const aiService = {
     return REQUEST.post(ROUTES.AI.BUDGET, payload);
   },
 
-  // Streaming hotel chat — returns stream, handled separately in component
-  chatWithHotel(payload: {
-    messages: Array<{ role: string; content: string }>;
-    hotelId: string;
-  }) {
-    return REQUEST.post(ROUTES.AI.CHAT, payload);
-  },
-
   // Review summarizer
   getReviewSummary(hotelId: string) {
     return REQUEST.post(ROUTES.AI.REVIEW_SUMMARY, { hotelId });
