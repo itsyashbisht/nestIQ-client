@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IBooking } from "@/types/booking";
+import type { CreateBookingResponse, IBookingWithHotel } from "@/types/booking";
 import {
   cancelBooking,
   createBooking,
@@ -9,66 +9,41 @@ import {
   updateBookingStatus,
 } from "@/thunks/booking.thunk";
 
+type AsyncStatus = "idle" | "loading" | "succeeded" | "failed";
+
 interface BookingState {
-  loading: boolean;
-  error: string | null;
-  booking: IBooking | null;
-  myBookings: IBooking[];
-  allBookings: IBooking[];
+  status: AsyncStatus;
+  myBookings: IBookingWithHotel[];
+  currentBooking: CreateBookingResponse | null;
+  selectedBooking: IBookingWithHotel | null;
   total: number;
   page: number;
-  razorpayOrderId: any;
+  error: string | null;
 }
 
 const initialState: BookingState = {
-  loading: false,
-  error: null,
-  razorpayOrderId: "",
-  booking: null,
+  status: "idle",
   myBookings: [],
-  allBookings: [],
+  currentBooking: null,
+  selectedBooking: null,
   total: 0,
   page: 1,
-};
-
-const toBookingsArray = (data: unknown): IBooking[] => {
-  if (Array.isArray(data)) {
-    return data as IBooking[];
-  }
-
-  if (
-    data &&
-    typeof data === "object" &&
-    Array.isArray((data as { bookings?: unknown }).bookings)
-  ) {
-    return (data as { bookings: IBooking[] }).bookings;
-  }
-
-  return [];
+  error: null,
 };
 
 const upsertBookingInList = (
-  list: IBooking[],
-  booking: IBooking,
-): IBooking[] => {
-  const index = list.findIndex((item) => item._id === booking._id);
-  if (index === -1) {
-    return [booking, ...list];
-  }
-
+  list: IBookingWithHotel[],
+  booking: IBookingWithHotel,
+): IBookingWithHotel[] => {
+  const index = list.findIndex((b) => b._id === booking._id);
+  if (index === -1) return [booking, ...list];
   const next = [...list];
   next[index] = booking;
   return next;
 };
 
 const getErrorMessage = (payload: unknown): string =>
-  typeof payload === "string"
-    ? payload
-    : payload &&
-        typeof payload === "object" &&
-        typeof (payload as { message?: unknown }).message === "string"
-      ? ((payload as { message: string }).message as string)
-      : "Something went wrong";
+  typeof payload === "string" ? payload : "Something went wrong";
 
 const bookingSlice = createSlice({
   name: "booking",
@@ -78,106 +53,108 @@ const bookingSlice = createSlice({
       state.error = null;
     },
     clearCurrentBooking(state) {
-      state.booking = null;
+      state.currentBooking = null;
     },
   },
   extraReducers: (builder) => {
     builder
+
+      // ── CREATE ──────────────────────────────────────────────────────
       .addCase(createBooking.pending, (state) => {
-        state.loading = true;
-        state.booking = null;
-        state.razorpayOrderId = null;
+        state.status = "loading";
         state.error = null;
+        state.currentBooking = null;
       })
       .addCase(createBooking.fulfilled, (state, action) => {
-        state.loading = false;
-        state.booking = action.payload.booking;
-        state.razorpayOrderId = action.payload.razorpayOrderId;
-        state.myBookings = upsertBookingInList(
-          state.myBookings,
-          action.payload.booking,
-        );
+        state.status = "succeeded";
+        state.currentBooking = action.payload;
       })
       .addCase(createBooking.rejected, (state, action) => {
-        state.loading = false;
+        state.status = "failed";
         state.error = getErrorMessage(action.payload);
       })
+
+      // ── GET MY BOOKINGS ─────────────────────────────────────────────
       .addCase(getMyBookings.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
         state.error = null;
       })
       .addCase(getMyBookings.fulfilled, (state, action) => {
-        state.loading = false;
-        state.myBookings = toBookingsArray(action.payload);
+        state.status = "succeeded";
+        state.myBookings = action.payload;
       })
       .addCase(getMyBookings.rejected, (state, action) => {
-        state.loading = false;
+        state.status = "failed";
         state.error = getErrorMessage(action.payload);
       })
+
+      // ── GET BOOKING BY ID ───────────────────────────────────────────
       .addCase(getBookingById.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
         state.error = null;
       })
       .addCase(getBookingById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.booking = action.payload as IBooking;
+        state.status = "succeeded";
+        state.selectedBooking = action.payload;
       })
       .addCase(getBookingById.rejected, (state, action) => {
-        state.loading = false;
+        state.status = "failed";
         state.error = getErrorMessage(action.payload);
       })
-      .addCase(updateBookingStatus.pending, (state) => {
-        state.loading = true;
+
+      // ── CANCEL ──────────────────────────────────────────────────────
+      .addCase(cancelBooking.pending, (state) => {
+        state.status = "loading";
         state.error = null;
       })
-      .addCase(updateBookingStatus.fulfilled, (state, action) => {
-        state.loading = false;
-        state.booking = action.payload;
+      .addCase(cancelBooking.fulfilled, (state, action) => {
+        state.status = "succeeded";
         state.myBookings = upsertBookingInList(
           state.myBookings,
           action.payload,
         );
-        state.allBookings = upsertBookingInList(
-          state.allBookings,
+        if (state.selectedBooking?._id === action.payload._id) {
+          state.selectedBooking = {
+            ...state.selectedBooking,
+            status: action.payload.status,
+          };
+        }
+      })
+      .addCase(cancelBooking.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = getErrorMessage(action.payload);
+      })
+
+      // ── UPDATE STATUS (admin) ───────────────────────────────────────
+      .addCase(updateBookingStatus.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateBookingStatus.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.myBookings = upsertBookingInList(
+          state.myBookings,
           action.payload,
         );
       })
       .addCase(updateBookingStatus.rejected, (state, action) => {
-        state.loading = false;
+        state.status = "failed";
         state.error = getErrorMessage(action.payload);
       })
-      .addCase(cancelBooking.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(cancelBooking.fulfilled, (state, action) => {
-        state.loading = false;
-        state.booking = action.payload;
-        state.myBookings = upsertBookingInList(
-          state.myBookings,
-          action.payload,
-        );
-        state.allBookings = upsertBookingInList(
-          state.allBookings,
-          action.payload,
-        );
-      })
-      .addCase(cancelBooking.rejected, (state, action) => {
-        state.loading = false;
-        state.error = getErrorMessage(action.payload);
-      })
+
+      // ── ALL BOOKINGS (admin) ────────────────────────────────────────
       .addCase(getAllBookings.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
         state.error = null;
       })
       .addCase(getAllBookings.fulfilled, (state, action) => {
-        state.loading = false;
-        state.allBookings = action.payload.bookings;
+        state.status = "succeeded";
+        state.myBookings = action.payload.bookings; // reuse for admin view
         state.total = action.payload.total;
         state.page = action.payload.page;
       })
       .addCase(getAllBookings.rejected, (state, action) => {
-        state.loading = false;
+        state.status = "failed";
         state.error = getErrorMessage(action.payload);
       });
   },

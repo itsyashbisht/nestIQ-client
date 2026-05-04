@@ -26,12 +26,10 @@ export interface IHotel {
   city: string;
   state: string;
   address: string;
-  coordinates: { lat: number; lng: number };
   images: IHotelImage[];
   amenities: string[];
   category: HotelCategory;
   vibes: HotelVibe[];
-  pricePerNight: number;
   startingFrom: number;
   rating: number;
   reviewCount: number;

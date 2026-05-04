@@ -4,8 +4,6 @@ import {
   CreateBookingResponse,
   GetAllBookingsParams,
   GetAllBookingsResponse,
-  IBooking,
-  IBookingDetail,
   IBookingWithHotel,
   UpdateBookingStatusRequest,
 } from "@/types/booking";
@@ -27,7 +25,7 @@ export const createBooking = createAsyncThunk<
 });
 
 export const getMyBookings = createAsyncThunk<
-  IBookingWithHotel,
+  IBookingWithHotel[],
   void,
   { rejectValue: string }
 >("booking/myBookings", async (_: void, { rejectWithValue }) => {
@@ -42,7 +40,7 @@ export const getMyBookings = createAsyncThunk<
 });
 
 export const getBookingById = createAsyncThunk<
-  IBookingDetail,
+  IBookingWithHotel,
   string,
   { rejectValue: string }
 >("booking/byId", async (payload, { rejectWithValue }) => {
@@ -57,7 +55,7 @@ export const getBookingById = createAsyncThunk<
 });
 
 export const updateBookingStatus = createAsyncThunk<
-  IBooking,
+  IBookingWithHotel,
   UpdateBookingStatusRequest,
   { rejectValue: string }
 >("booking/updateStatus", async (payload, { rejectWithValue }) => {
@@ -72,7 +70,7 @@ export const updateBookingStatus = createAsyncThunk<
 });
 
 export const cancelBooking = createAsyncThunk<
-  IBooking,
+  IBookingWithHotel,
   string,
   { rejectValue: string }
 >("booking/cancel", async (payload, { rejectWithValue }) => {

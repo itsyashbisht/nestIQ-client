@@ -9,8 +9,9 @@ export interface IRoom {
   type: RoomType;
   name: string;
   description: string;
-  capacity: number;
+  maxGuests: number;
   bedType: BedType;
+  isAvailable: boolean;
   pricePerNight: number;
   images: IHotelImage[];
   amenities: string[];
@@ -39,6 +40,7 @@ export interface CreateRoomResponse {
   capacity: number;
   bedType: BedType;
   pricePerNight: number;
+  isAvailable: boolean;
   images: IHotelImage[];
   amenities: string[];
   totalRooms: number;

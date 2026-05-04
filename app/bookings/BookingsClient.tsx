@@ -16,119 +16,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/hooks/useAppDispatch";
 import { cancelBooking, getMyBookings } from "@/thunks/booking.thunk";
 import { formatDate, formatPrice } from "@/lib/utils";
-import type { IBooking } from "@/types/booking";
-
-// Mock data for demo when API not connected
-const MOCK_BOOKINGS: IBooking[] = [
-  {
-    _id: "b1",
-    guestId: "u1",
-    hotelId: {
-      _id: "h1",
-      name: "The Coral Nest",
-      slug: "coral-nest",
-      city: "North Goa",
-      state: "Goa",
-      images: [],
-      category: "boutique",
-    },
-    rooms: [
-      {
-        roomId: {
-          _id: "r1",
-          name: "Ocean View Room",
-          type: "standard",
-          pricePerNight: 5200,
-        },
-        pricePerNight: 5200,
-        quantity: 1,
-      },
-    ],
-    checkIn: "2025-12-20",
-    checkOut: "2025-12-23",
-    nights: 3,
-    guests: 2,
-    subtotal: 15600,
-    taxes: 1872,
-    totalAmount: 17472,
-    status: "confirmed",
-    razorpayOrderId: "order_abc123",
-    createdAt: "2025-11-15T10:30:00Z",
-    updatedAt: "2025-11-15T10:31:00Z",
-  },
-  {
-    _id: "b2",
-    guestId: "u1",
-    hotelId: {
-      _id: "h2",
-      name: "Rajputana Palace & Spa",
-      slug: "rajputana-palace",
-      city: "Jaipur",
-      state: "Rajasthan",
-      images: [],
-      category: "luxury",
-    },
-    rooms: [
-      {
-        roomId: {
-          _id: "r2",
-          name: "Deluxe Suite",
-          type: "suite",
-          pricePerNight: 9600,
-        },
-        pricePerNight: 9600,
-        quantity: 1,
-      },
-    ],
-    checkIn: "2025-11-14",
-    checkOut: "2025-11-17",
-    nights: 3,
-    guests: 2,
-    subtotal: 28800,
-    taxes: 3456,
-    totalAmount: 32256,
-    status: "completed",
-    razorpayOrderId: "order_def456",
-    createdAt: "2025-10-10T08:00:00Z",
-    updatedAt: "2025-11-17T12:00:00Z",
-  },
-  {
-    _id: "b3",
-    guestId: "u1",
-    hotelId: {
-      _id: "h3",
-      name: "Misty Valley Resort",
-      slug: "misty-valley",
-      city: "Munnar",
-      state: "Kerala",
-      images: [],
-      category: "comfort",
-    },
-    rooms: [
-      {
-        roomId: {
-          _id: "r3",
-          name: "Family Villa",
-          type: "villa",
-          pricePerNight: 4133,
-        },
-        pricePerNight: 4133,
-        quantity: 1,
-      },
-    ],
-    checkIn: "2025-10-05",
-    checkOut: "2025-10-08",
-    nights: 3,
-    guests: 3,
-    subtotal: 12400,
-    taxes: 1488,
-    totalAmount: 13888,
-    status: "cancelled",
-    razorpayOrderId: "order_ghi789",
-    createdAt: "2025-09-01T14:00:00Z",
-    updatedAt: "2025-09-20T09:00:00Z",
-  },
-];
+import type { IBookingHotel, IBookingWithHotel } from "@/types/booking";
 
 const STATUS_CONFIG = {
   confirmed: {
@@ -230,7 +118,7 @@ function ReviewModal({
   booking,
   onClose,
 }: {
-  booking: IBooking;
+  booking: IBookingWithHotel;
   onClose: () => void;
 }) {
   const [rating, setRating] = useState(5);
@@ -258,7 +146,7 @@ function ReviewModal({
           Write a Review
         </h3>
         <p className="text-[13px] text-[#a1a4a5] mb-5">
-          {booking?.hotelId?.name}
+          {booking?.hotel?.name}
         </p>
 
         {/* Stars */}
@@ -333,18 +221,16 @@ function ReviewModal({
 export default function BookingsClient() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {
-    myBookings: bookings,
-    listStatus,
-    cancelStatus,
-  } = useAppSelector((s) => s.booking);
+  const { myBookings: bookings, status: listStatus } = useAppSelector(
+    (s) => s.booking,
+  );
   const { user, isInitialized } = useAppSelector((s) => s.auth);
 
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
-  const [reviewTarget, setReviewTarget] = useState<IBooking | null>(null);
+  const [reviewTarget, setReviewTarget] = useState<IBookingHotel | null>(null);
   const [filter, setFilter] = useState<
-    "all" | "confirmed" | "completed" | "cancelled"
-  >("all");
+    "pending" | "confirmed" | "completed" | "cancelled"
+  >("pending");
 
   useEffect(() => {
     if (isInitialized && !user) {
@@ -354,9 +240,10 @@ export default function BookingsClient() {
     if (user) dispatch(getMyBookings());
   }, [user, isInitialized]);
 
-  const displayBookings = bookings.length > 0 ? bookings : MOCK_BOOKINGS;
+  const displayBookings: IBookingWithHotel[] =
+    bookings.length > 0 ? bookings : [];
   const filtered =
-    filter === "all"
+    filter === "pending"
       ? displayBookings
       : displayBookings.filter((b) => b.status === filter);
 
@@ -393,7 +280,7 @@ export default function BookingsClient() {
           transition={{ delay: 0.1 }}
           className="flex gap-0 rounded-xl border border-[rgba(214,235,253,0.19)] mb-8 overflow-hidden"
         >
-          {(["all", "confirmed", "completed", "cancelled"] as const).map(
+          {(["pending", "confirmed", "completed", "cancelled"] as const).map(
             (f) => (
               <button
                 key={f}
@@ -441,8 +328,8 @@ export default function BookingsClient() {
                 const status =
                   STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.pending;
                 const StatusIcon = status.icon;
-                const emoji = EMOJI[booking.hotelId.category] ?? "🏨";
-                const img = booking.hotelId.images?.[0]?.url;
+                const emoji = EMOJI[booking.hotel?.category] ?? "🏨";
+                const img = booking.hotel?.images?.[0]?.url;
 
                 return (
                   <motion.div
@@ -465,7 +352,7 @@ export default function BookingsClient() {
                         {img ? (
                           <img
                             src={img}
-                            alt={booking.hotelId.name}
+                            alt={booking.hotel.name}
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -478,11 +365,11 @@ export default function BookingsClient() {
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <h3 className="font-display text-lg text-white leading-tight mb-0.5">
-                              {booking.hotelId.name}
+                              {booking.hotel?.name}
                             </h3>
                             <div className="flex items-center gap-1.5 text-[12px] text-[#a1a4a5]">
                               <MapPin size={11} />
-                              {booking.hotelId.city}, {booking.hotelId.state}
+                              {booking.hotel?.city}, {booking.hotel?.state}
                             </div>
                           </div>
                           {/* Status badge */}
@@ -507,7 +394,7 @@ export default function BookingsClient() {
                             {formatDate(booking.checkOut)} · {booking.nights}N
                           </div>
                           <div className="text-[12px] text-[#a1a4a5]">
-                            {booking.rooms[0]?.roomId.name}
+                            {booking.rooms[0]?.room?.name}
                           </div>
                           <div className="font-mono text-[10px] text-[#464a4d]">
                             #{booking._id.slice(-8).toUpperCase()}
@@ -525,7 +412,7 @@ export default function BookingsClient() {
                             whileHover={{ scale: 1.03 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={() =>
-                              router.push(`/hotels/${booking.hotelId.slug}`)
+                              router.push(`/hotels/${booking.hotel.slug}`)
                             }
                             className="flex items-center gap-1 text-[11px] px-3 py-1.5 rounded-full border border-[rgba(214,235,253,0.19)] text-[#a1a4a5] hover:text-white hover:border-[rgba(214,235,253,0.4)] transition-all"
                           >
@@ -569,7 +456,7 @@ export default function BookingsClient() {
               >
                 <div className="text-5xl mb-4">📭</div>
                 <div className="text-[#a1a4a5] text-base mb-2">
-                  No {filter !== "all" ? filter : ""} bookings found
+                  No {filter !== "pending" ? filter : ""} bookings found
                 </div>
                 <button
                   onClick={() => router.push("/search")}
@@ -590,7 +477,7 @@ export default function BookingsClient() {
             bookingId={cancelTarget}
             onConfirm={handleCancel}
             onClose={() => setCancelTarget(null)}
-            loading={cancelStatus === "loading"}
+            loading={listStatus === "loading"}
           />
         )}
         {reviewTarget && (
