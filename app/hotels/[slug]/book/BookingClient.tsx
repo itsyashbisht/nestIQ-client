@@ -11,7 +11,6 @@ import { calcNights, formatPrice } from "@/lib/utils";
 import { getHotelBySlug } from "@/thunks/hotel.thunk";
 import { getRoomById } from "@/thunks/room.thunk";
 import { useRazorpayCheckout } from "@/hooks/useRazorpayCheckout";
-import { IBooking } from "@/types/booking";
 
 const STEPS = ["Room Selected", "Guest Details", "Payment"];
 
@@ -30,7 +29,7 @@ export function BookingClient() {
   const { user } = useAppSelector((s) => s.auth);
   const { openCheckout, paying } = useRazorpayCheckout();
   const { hotel, status } = useAppSelector((s) => s.hotel);
-  const { booking: currentBooking, createStatus } = useAppSelector(
+  const { currentBooking, status: createStatus } = useAppSelector(
     (s) => s.booking,
   );
   const { razorpayKeyId, keyStatus } = useAppSelector((s) => s.payment);
@@ -39,8 +38,9 @@ export function BookingClient() {
   const [step, setStep] = useState(1);
   const [confirmed, setConfirmed] = useState(false);
   const [bookingSession, setBookingSession] = useState<{
-    booking: IBooking;
+    bookingId: string;
     razorpayOrderId: String;
+    amount: null;
   } | null>(null);
 
   useEffect(() => {
@@ -86,8 +86,9 @@ export function BookingClient() {
     );
     if (createBooking.fulfilled.match(result)) {
       setBookingSession({
-        booking: result.payload.booking,
+        bookingId: result.payload.bookingId,
         razorpayOrderId: String(result.payload.razorpayOrderId),
+        amount: result.payload.amount,
       });
       setStep(2);
     }
@@ -98,11 +99,17 @@ export function BookingClient() {
     console.log(currentBooking);
 
     await openCheckout({
-      bookingId: bookingSession?.booking._id,
+      bookingId: bookingSession?.bookingId,
       razorpayOrderId: bookingSession?.razorpayOrderId,
-      amount: bookingSession?.booking.totalAmount,
+      amount: bookingSession?.amount,
       hotelName: hotel?.name ?? "",
       user,
+      method: {
+        netbanking: true,
+        upi: true,
+        card: true,
+        wallet: false,
+      },
     });
   };
 

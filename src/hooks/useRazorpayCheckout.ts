@@ -15,6 +15,12 @@ interface CheckoutOptions {
   amount: number; // INR — NOT paise
   hotelName: string;
   user: IUser;
+  method: {
+    netbanking: boolean;
+    card: boolean;
+    upi: boolean;
+    wallet: boolean;
+  };
 }
 
 export function useRazorpayCheckout() {
@@ -44,12 +50,6 @@ export function useRazorpayCheckout() {
       setPaying(false);
       return;
     }
-
-    console.log({
-      amount: opts.amount,
-      orderId: opts.razorpayOrderId,
-      phoneNumber: opts.user.phoneNumber,
-    });
 
     // 3. Open Razorpay modal
     const rzp = new window.Razorpay({
