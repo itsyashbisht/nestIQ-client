@@ -25,77 +25,105 @@ import Link from "next/link";
 import HotelCard from "@/components/HotelCard";
 import type { IHotel } from "@/types/hotel";
 
-// ─── Data ──────────────────────────────────────────────────────────────────
-
 const MOCK_HOTELS: IHotel[] = [
   {
-    _id: "1",
-    name: "Rajputana Palace & Spa",
-    slug: "rajputana-palace",
+    _id: "7",
+    name: "The Grand Udaipur Reserve",
+    slug: "grand-udaipur-reserve",
     description:
-      "Royal Rajasthani heritage with modern luxury. Marble courtyards, rooftop dining under stars.",
-    city: "Jaipur",
+      "An architectural marvel overlooking Lake Pichola. Experience the grandeur of Mewar with world-class hospitality.",
+    city: "Udaipur",
     state: "Rajasthan",
-    address: "City Palace Road",
+    address: "Lake Pichola Waterfront",
     category: "luxury",
-    vibes: ["romantic"],
-    amenities: ["Pool", "Spa", "Restaurant", "WiFi"],
-    images: [],
-    pricePerNight: 8500,
+    vibes: ["romantic", "luxury"],
+    amenities: ["Infinity Pool", "Private Butler", "Boating", "Spa"],
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?q=80&w=2000&auto=format&fit=crop",
+        public_id: "hotels/udaipur_main_01",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1582719478250-c89cae4df85b?q=80&w=2000&auto=format&fit=crop",
+        public_id: "hotels/udaipur_suite_02",
+      },
+    ],
     rating: 4.9,
-    reviewCount: 312,
+    reviewCount: 512,
     isActive: true,
     checkInTime: "14:00",
     checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
+    nearbyAttractions: ["City Palace", "Jag Mandir", "Bagore Ki Haveli"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    startingFrom: 35000,
+    ownerId: "owner_raj_001",
   },
   {
-    _id: "2",
-    name: "The Coral Nest",
-    slug: "coral-nest",
+    _id: "8",
+    name: "Nilgiri Tea Estates & Spa",
+    slug: "nilgiri-tea-estates",
     description:
-      "Beachfront boutique on Calangute shores. Infinity pool, candlelit dinners.",
-    city: "North Goa",
-    state: "Goa",
-    address: "Calangute Beach Road",
+      "Stay in a converted colonial bungalow surrounded by rolling tea plantations and the crisp mountain air of the Nilgiris.",
+    city: "Ooty",
+    state: "Tamil Nadu",
+    address: "Upper Coonoor Road",
     category: "boutique",
-    vibes: ["romantic", "wellness"],
-    amenities: ["Pool", "Beach", "Restaurant"],
-    images: [],
-    pricePerNight: 5200,
-    rating: 4.8,
-    reviewCount: 198,
+    vibes: ["nature", "wellness"],
+    amenities: ["Tea Tasting", "Fireplace", "Library", "Hiking Trails"],
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1598305315181-4b71f98d7522?q=80&w=2000&auto=format&fit=crop",
+        public_id: "hotels/ooty_estate_01",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?q=80&w=2000&auto=format&fit=crop",
+        public_id: "hotels/ooty_lounge_02",
+      },
+    ],
+    rating: 4.7,
+    reviewCount: 289,
     isActive: true,
-    checkInTime: "14:00",
-    checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
+    checkInTime: "13:00",
+    checkOutTime: "10:30",
+    nearbyAttractions: ["Botanical Garden", "Ooty Lake", "Doddabetta Peak"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    startingFrom: 15500,
+    ownerId: "owner_south_002",
   },
   {
-    _id: "3",
-    name: "Misty Valley Resort",
-    slug: "misty-valley",
+    _id: "9",
+    name: "The Varanasi Ghats Residency",
+    slug: "varanasi-ghats-residency",
     description:
-      "Nestled in tea gardens of Munnar. Wake up to mist-covered hills.",
-    city: "Munnar",
-    state: "Kerala",
-    address: "Tea Garden Road",
+      "A heritage stay on the banks of the Ganges. Witness the evening Aarti from our private terrace.",
+    city: "Varanasi",
+    state: "Uttar Pradesh",
+    address: "Dashashwamedh Ghat",
     category: "comfort",
-    vibes: ["nature", "wellness"],
-    amenities: ["Spa", "Restaurant", "Trekking"],
-    images: [],
-    pricePerNight: 3800,
-    rating: 4.7,
-    reviewCount: 245,
+    vibes: ["heritage", "spiritual"],
+    amenities: ["Rooftop Terrace", "Ganga View", "Yoga Classes", "Restaurant"],
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=2000&auto=format&fit=crop",
+        public_id: "hotels/vns_ghat_01",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=2000&auto=format&fit=crop",
+        public_id: "hotels/vns_room_02",
+      },
+    ],
+    rating: 4.6,
+    reviewCount: 340,
     isActive: true,
-    checkInTime: "14:00",
+    checkInTime: "12:00",
     checkOutTime: "11:00",
-    nearbyAttractions: [],
-    createdAt: "",
-    updatedAt: "",
+    nearbyAttractions: ["Kashi Vishwanath Temple", "Sarnath", "Assi Ghat"],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    startingFrom: 9000,
+    ownerId: "owner_ganga_003",
   },
 ];
 
@@ -189,8 +217,7 @@ const TESTIMONIALS = [
   },
 ];
 
-// ─── Helpers ────────────────────────────────────────────────────────────────
-
+// Helpers
 function SectionReveal({
   children,
   className = "",
@@ -242,8 +269,7 @@ function SectionTag({
   );
 }
 
-// ─── Mobile Search Sheet ─────────────────────────────────────────────────────
-
+// ─── Mobile Search Sheet
 function MobileSearchSheet({
   open,
   onClose,
@@ -737,16 +763,31 @@ export default function HomeClient({
           {/* Featured card only shows on sm+ as col-span-2 */}
           {hotels[0] && (
             <div className="sm:col-span-2 lg:col-span-2">
-              <HotelCard hotel={hotels[0]} variant="featured" index={0} />
+              <HotelCard
+                hotel={hotels[0]}
+                lowestRoomPrice={hotels[0]?.startingFrom}
+                variant="featured"
+                index={0}
+              />
             </div>
           )}
           {hotels[1] && (
-            <HotelCard hotel={hotels[1]} variant="default" index={1} />
+            <HotelCard
+              hotel={hotels[1]}
+              lowestRoomPrice={hotels[1]?.startingFrom}
+              variant="default"
+              index={1}
+            />
           )}
           {/* Third card — full width on mobile, shows in grid on larger */}
           {hotels[2] && (
             <div className="sm:col-span-2 lg:col-span-1">
-              <HotelCard hotel={hotels[2]} variant="default" index={2} />
+              <HotelCard
+                hotel={hotels[2]}
+                lowestRoomPrice={hotels[2]?.startingFrom}
+                variant="default"
+                index={2}
+              />
             </div>
           )}
         </div>
