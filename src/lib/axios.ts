@@ -12,7 +12,7 @@ const REQUEST = axios.create({
 REQUEST.interceptors.request.use(
   (config) => {
     if (typeof window !== "undefined") {
-      const token = localStorage.getItem("nestiq_access_token");
+      const token = localStorage.getItem("accessToken");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -23,18 +23,6 @@ REQUEST.interceptors.request.use(
 );
 
 // Response interceptor — flatten data, handle 401
-REQUEST.interceptors.request.use((config) => {
-  // In Next.js we read from localStorage only on client side
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
-});
-
-// Flatten response
 /*
   API returns:
   { statusCode: 200, data: { ... }, message: "Success", success: true }
