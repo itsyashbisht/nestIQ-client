@@ -8,17 +8,18 @@ const REQUEST = axios.create({
   timeout: 15000,
 });
 
-// Response interceptor — flatten data, handle 401
-/*
-  API returns:
-  { statusCode: 200, data: { ... }, message: "Success", success: true }
+// ✅ Request interceptor — attach token from localStorage
+REQUEST.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
 
-  Axios wraps it as:
-  response.data = { statusCode, data, message, success }
-
-  We want:
-  response.data = { ... }  ← just the actual data
-*/
+// Response interceptor — unchanged
 REQUEST.interceptors.response.use(
   (response) => {
     const apiResponse = response.data;
@@ -39,28 +40,19 @@ REQUEST.interceptors.response.use(
       typeof window !== "undefined" &&
       Boolean(localStorage.getItem("accessToken"));
 
-    // AUTO LOGOUT on 401 for authenticated flows.
-    // Skip redirect for anonymous /me probes so public pages don't bounce to /login.
     if (
       error.response?.status === 401 &&
       typeof window !== "undefined" &&
       !isAuthEntryPoint
     ) {
-      console.log("Unauthorized — clearing token");
       localStorage.removeItem("accessToken");
-
       if (hasClientToken && !isSessionProbe) {
         window.location.href = "/login";
       }
     }
 
-    if (error.response?.status === 403) {
-      console.error("Forbidden access");
-    }
-
-    if (error.response?.status === 500) {
-      console.error("Server error");
-    }
+    if (error.response?.status === 403) console.error("Forbidden access");
+    if (error.response?.status === 500) console.error("Server error");
 
     return Promise.reject(error);
   },
