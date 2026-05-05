@@ -615,13 +615,13 @@ export default function HotelDetailClient({ slug }: Props) {
   );
   const { user } = useAppSelector((s) => s.auth);
 
-  const hotel: IHotel = currentHotel;
-  const rooms: IRoom[] = currentHotelRooms?.length > 0 ? currentHotelRooms : [];
+  const hotel = currentHotel;
+  const rooms = currentHotelRooms?.length > 0 ? currentHotelRooms : [];
 
   const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
-  const [mobileSheetOpen, setMobileSheetOpen] = useState(false); // ← FIX
+  const [mobileSheetOpen, setMobileSheetOpen] = useState(false);
 
   const roomsSectionRef = useRef<HTMLDivElement>(null);
 
@@ -632,9 +632,11 @@ export default function HotelDetailClient({ slug }: Props) {
         if (h?._id) dispatch(getRoomsByHotelId(h._id));
       });
     } else {
-      dispatch(getRoomsByHotelId(hotel._id));
+      if (hotel !== null) {
+        dispatch(getRoomsByHotelId(hotel._id));
+      }
     }
-  }, [slug]); // eslint-disable-line
+  }, [slug]);
 
   const handleRoomSelect = (room: IRoom) => {
     setSelectedRoom((prev) => (prev?._id === room._id ? null : room));
@@ -661,6 +663,7 @@ export default function HotelDetailClient({ slug }: Props) {
     router.push(`/hotels/${slug}/book?${params.toString()}`);
   };
 
+  // @ts-ignore
   const accentColor = CAT_COLOR[hotel?.category] ?? "#ff801f";
   const coverImg = hotel?.images?.[0]?.url ?? "";
   const EMOJI_MAP: Record<string, string> = {

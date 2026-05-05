@@ -11,7 +11,7 @@ import RoomOptionCards from "./RoomOptionCards";
 
 interface Message {
   id: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system" | "tool" | "function" | "data";
   content: string;
 }
 

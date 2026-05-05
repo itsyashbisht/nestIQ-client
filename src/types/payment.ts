@@ -1,4 +1,4 @@
-import { IBooking } from '@/src/types/booking';
+import { IBookingHotel } from "@/types/booking";
 
 export interface verifyPaymentRequest {
   razorpay_order_id: string;
@@ -13,5 +13,5 @@ export interface getRazorpayKeyResponse {
 
 export interface verifyPaymentResponse {
   verified: boolean;
-  booking: IBooking;
+  booking: IBookingHotel;
 }

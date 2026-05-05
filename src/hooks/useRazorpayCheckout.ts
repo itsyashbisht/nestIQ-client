@@ -9,18 +9,22 @@ import { clearCurrentBooking } from "@/slices/booking.slice";
 import { toast } from "react-toastify";
 import { IUser } from "@/types/auth";
 
+type RazorpayMethod = Partial<{
+  netbanking: boolean;
+  card: boolean;
+  upi: boolean;
+  wallet: boolean;
+  emi: boolean;
+  paylater: boolean;
+}>;
+
 interface CheckoutOptions {
   bookingId: string;
   razorpayOrderId: string;
-  amount: number; // INR — NOT paise
+  amount: number; // (INR)
   hotelName: string;
   user: IUser;
-  method: {
-    netbanking: boolean;
-    card: boolean;
-    upi: boolean;
-    wallet: boolean;
-  };
+  method?: RazorpayMethod;
 }
 
 export function useRazorpayCheckout() {
@@ -60,7 +64,7 @@ export function useRazorpayCheckout() {
       name: "NestIQ",
       description: `Booking at ${opts.hotelName}`,
       image: "/logo.png",
-
+      method: opts.method,
       prefill: {
         name: opts.user.fullname,
         email: opts.user.email,

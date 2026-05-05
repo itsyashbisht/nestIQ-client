@@ -51,7 +51,7 @@ export default function HotelCard({
 }: HotelCardProps) {
   const cat = CAT[hotel.category] ?? CAT.budget;
   const emoji = EMOJI[hotel.category] ?? "🏨";
-  const price = lowestRoomPrice ?? hotel.pricePerNight;
+  const price = lowestRoomPrice ?? hotel.startingFrom;
   const coverImg = hotel.images?.[0]?.url;
 
   const anim = {

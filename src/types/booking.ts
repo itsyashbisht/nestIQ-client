@@ -42,7 +42,7 @@ export interface IBookedRoomEntry {
   quantity: number;
 }
 
-// ─── Core booking response shape ──────────────────────────────────────────────
+// Core booking response shape
 
 /**
  * Shape of a booking as returned by getMyBookings and getBookingById.
@@ -68,7 +68,7 @@ export interface IBookingWithHotel {
   updatedAt: string;
 }
 
-// ─── createBooking ────────────────────────────────────────────────────────────
+// createBooking
 
 export interface CreateBookingRequest {
   hotelId: string;
@@ -95,9 +95,8 @@ export interface CreateBookingResponse {
   totalAmount: number;
 }
 
-// ─── getAllBookings (admin) ────────────────────────────────────────────────────
-
-/** Admin booking row — populated guestId + hotelId, no room rename */
+// getAllBookings (admin)
+// Admin booking row — populated guestId + hotelId, no room rename.
 export interface IAdminBooking {
   _id: string;
   guestId: {
@@ -136,8 +135,7 @@ export interface GetAllBookingsParams {
   limit?: number;
 }
 
-// ─── updateBookingStatus ──────────────────────────────────────────────────────
-
+// updateBookingStatus
 export interface UpdateBookingStatusRequest {
   bookingId: string;
   status: BookingStatus;

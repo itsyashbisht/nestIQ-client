@@ -227,7 +227,9 @@ export default function BookingsClient() {
   const { user, isInitialized } = useAppSelector((s) => s.auth);
 
   const [cancelTarget, setCancelTarget] = useState<string | null>(null);
-  const [reviewTarget, setReviewTarget] = useState<IBookingHotel | null>(null);
+  const [reviewTarget, setReviewTarget] = useState<IBookingWithHotel | null>(
+    null,
+  );
   const [filter, setFilter] = useState<
     "pending" | "confirmed" | "completed" | "cancelled"
   >("pending");

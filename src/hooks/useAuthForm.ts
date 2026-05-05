@@ -1,19 +1,19 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { useAppDispatch } from './useAppDispatch';
-import { useAppSelector } from './useAppSelector';
-import { loginUser, registerUser } from '@/src/thunks/auth.thunk';
-import { getMe } from '@/src/thunks/user.thunk';
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { useAppDispatch } from "./useAppDispatch";
+import { useAppSelector } from "./useAppSelector";
+import { loginUser, registerUser } from "@/thunks/auth.thunk";
+import { getMe } from "@/thunks/user.thunk";
+import type { LoginRequest, RegisterRequest } from "@/types/auth";
 import {
+  ValidationErrors,
   validateLoginForm,
   validateRegisterStep1,
   validateRegisterStep2,
   validateRegisterStep3,
-  type ValidationErrors,
-} from '@/src/lib/validators/auth.validator';
-import type { LoginRequest, RegisterRequest } from '@/src/types/auth';
+} from "@/lib/auth.validator";
 
 export interface AuthFormState {
   email: string;
@@ -28,15 +28,15 @@ export interface AuthFormState {
 }
 
 const INITIAL_FORM: AuthFormState = {
-  email: '',
-  password: '',
-  username: '',
-  fullname: '',
-  address: '',
-  city: '',
-  state: '',
-  pincode: '',
-  phoneNumber: '',
+  email: "",
+  password: "",
+  username: "",
+  fullname: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: "",
+  phoneNumber: "",
 };
 
 export function useAuthForm() {
@@ -47,7 +47,7 @@ export function useAuthForm() {
   const status = useAppSelector((state) => state.auth.status);
   const error = useAppSelector((state) => state.auth.error);
 
-  const loading = status === 'loading';
+  const loading = status === "loading";
 
   const [form, setForm] = useState<AuthFormState>(INITIAL_FORM);
   const [regStep, setRegStep] = useState(1);
@@ -113,8 +113,8 @@ export function useAuthForm() {
 
     if (loginUser.fulfilled.match(result)) {
       await dispatch(getMe());
-      toast.success('Welcome back!');
-      router.push('/');
+      toast.success("Welcome back!");
+      router.push("/");
     } else {
       // error is already in Redux state — no need to do anything extra
       // the component reads it from useAppSelector
@@ -140,8 +140,8 @@ export function useAuthForm() {
 
     if (registerUser.fulfilled.match(result)) {
       await dispatch(getMe());
-      toast.success('Account created! Welcome to NestIQ.');
-      router.push('/');
+      toast.success("Account created! Welcome to NestIQ.");
+      router.push("/");
     }
   }
 

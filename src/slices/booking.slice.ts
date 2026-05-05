@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { CreateBookingResponse, IBookingWithHotel } from "@/types/booking";
+import type {
+  CreateBookingResponse,
+  IAdminBooking,
+  IBookingWithHotel,
+} from "@/types/booking";
 import {
   cancelBooking,
   createBooking,
@@ -14,6 +18,7 @@ type AsyncStatus = "idle" | "loading" | "succeeded" | "failed";
 interface BookingState {
   status: AsyncStatus;
   myBookings: IBookingWithHotel[];
+  allBookings: IAdminBooking[];
   currentBooking: CreateBookingResponse | null;
   selectedBooking: IBookingWithHotel | null;
   total: number;
@@ -24,6 +29,7 @@ interface BookingState {
 const initialState: BookingState = {
   status: "idle",
   myBookings: [],
+  allBookings: [],
   currentBooking: null,
   selectedBooking: null,
   total: 0,
@@ -149,7 +155,7 @@ const bookingSlice = createSlice({
       })
       .addCase(getAllBookings.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.myBookings = action.payload.bookings; // reuse for admin view
+        state.allBookings = action.payload.bookings; // reuse for admin view
         state.total = action.payload.total;
         state.page = action.payload.page;
       })

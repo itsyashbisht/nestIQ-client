@@ -1,5 +1,5 @@
-import { HotelCategory, HotelVibe, IHotel } from '@/src/types/hotel';
-import { IRoom } from '@/src/types/room';
+import { HotelCategory, HotelVibe, IHotel } from "@/types/hotel";
+import { IRoom } from "@/types/room";
 
 export interface SearchFilters {
   query?: string;
@@ -10,7 +10,7 @@ export interface SearchFilters {
   vibe?: HotelVibe;
   category?: HotelCategory;
   amenities?: string[];
-  sortBy?: 'price_asc' | 'price_desc' | 'rating' | 'relevance';
+  sortBy?: "price_asc" | "price_desc" | "rating" | "relevance";
   page?: number;
   limit?: number;
 }

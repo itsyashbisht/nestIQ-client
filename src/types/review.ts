@@ -1,4 +1,4 @@
-import { IUser } from '@/src/types/auth';
+import { IUser } from "@/types/auth";
 
 export interface IReview {
   _id: string;

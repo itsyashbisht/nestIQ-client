@@ -36,7 +36,7 @@ const MOCK_HOTELS: IHotel[] = [
     state: "Rajasthan",
     address: "Lake Pichola Waterfront",
     category: "luxury",
-    vibes: ["romantic", "luxury"],
+    vibes: ["romantic", "intimate"],
     amenities: ["Infinity Pool", "Private Butler", "Boating", "Spa"],
     images: [
       {
@@ -102,7 +102,7 @@ const MOCK_HOTELS: IHotel[] = [
     state: "Uttar Pradesh",
     address: "Dashashwamedh Ghat",
     category: "comfort",
-    vibes: ["heritage", "spiritual"],
+    vibes: ["heritage", "heritage"],
     amenities: ["Rooftop Terrace", "Ganga View", "Yoga Classes", "Restaurant"],
     images: [
       {

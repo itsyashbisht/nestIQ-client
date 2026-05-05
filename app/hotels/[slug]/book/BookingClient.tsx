@@ -39,9 +39,13 @@ export function BookingClient() {
   const [confirmed, setConfirmed] = useState(false);
   const [bookingSession, setBookingSession] = useState<{
     bookingId: string;
-    razorpayOrderId: String;
-    amount: null;
-  } | null>(null);
+    razorpayOrderId: string;
+    amount: number;
+  }>({
+    bookingId: "",
+    razorpayOrderId: "",
+    amount: 0,
+  });
 
   useEffect(() => {
     dispatch(getHotelBySlug(slug));
@@ -58,7 +62,7 @@ export function BookingClient() {
 
   // Calculations.
   const nights = checkIn && checkOut ? calcNights(checkIn, checkOut) : 1;
-  const pricePerNight = room?.pricePerNight;
+  const pricePerNight: number = room?.pricePerNight as number;
   const subtotal = pricePerNight * nights;
   const taxes = Math.round(subtotal * 0.12);
   const total = subtotal + taxes;
@@ -75,7 +79,6 @@ export function BookingClient() {
           {
             roomId,
             quantity: 1,
-            pricePerNight,
           },
         ],
         checkIn,
@@ -85,10 +88,11 @@ export function BookingClient() {
       }),
     );
     if (createBooking.fulfilled.match(result)) {
+      console.log(result);
       setBookingSession({
         bookingId: result.payload.bookingId,
         razorpayOrderId: String(result.payload.razorpayOrderId),
-        amount: result.payload.amount,
+        amount: result.payload?.amount,
       });
       setStep(2);
     }
@@ -96,7 +100,6 @@ export function BookingClient() {
 
   const handleRazorpay = async () => {
     if (!currentBooking || !user) return;
-    console.log(currentBooking);
 
     await openCheckout({
       bookingId: bookingSession?.bookingId,
@@ -163,7 +166,9 @@ export function BookingClient() {
             transition={{ delay: 0.4 }}
             className="font-mono text-[11px] text-[#464a4d] mb-6"
           >
-            #{currentBooking?._id?.slice(-8).toUpperCase() ?? "NQ-2025-0001"}
+            #
+            {currentBooking?.bookingId?.slice(-8).toUpperCase() ??
+              "NQ-2025-0001"}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 8 }}
@@ -440,9 +445,11 @@ export function BookingClient() {
                 </div>
                 <div className="border-t border-[rgba(214,235,253,0.19)] pt-2 mt-1">
                   <div className="flex justify-between text-[#a1a4a5]">
-                    <span>
-                      {formatPrice(room?.pricePerNight)} × {nights}
-                    </span>
+                    {room?.pricePerNight != null && (
+                      <span>
+                        {formatPrice(room.pricePerNight)} × {nights}
+                      </span>
+                    )}
                     <span>{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between text-[#a1a4a5] mt-1.5">

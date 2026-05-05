@@ -1,6 +1,10 @@
 import REQUEST from "@/lib/axios";
 import ROUTES from "../constants/routes.json";
-import { GetAllHotelsParams, UpdateHotelRequest } from "@/types/hotel";
+import {
+  CreateHotelRequest,
+  GetAllHotelsParams,
+  UpdateHotelRequest,
+} from "@/types/hotel";
 
 export const hotelService = {
   getAllHotels(params?: GetAllHotelsParams) {
@@ -23,10 +27,8 @@ export const hotelService = {
   },
 
   // OWNER: create hotel
-  createHotel(payload: FormData) {
-    return REQUEST.post(ROUTES.HOTEL.CREATE, payload, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+  createHotel(payload: CreateHotelRequest) {
+    return REQUEST.post(ROUTES.HOTEL.CREATE, payload);
   },
 
   // OWNER: update hotel

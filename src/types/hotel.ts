@@ -57,6 +57,7 @@ export interface CreateHotelRequest {
   state: string;
   address: string;
   category: HotelCategory;
+  images: IHotelImage[];
   vibes: HotelVibe[];
   amenities: string[];
   startingFrom: number;
