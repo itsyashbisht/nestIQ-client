@@ -65,11 +65,6 @@ export const loginUser = createAsyncThunk<
 >("auth/login", async (payload, { rejectWithValue }) => {
   try {
     const response = await authService.login(payload);
-    console.log(response);
-    const accessToken = getAccessTokenFromPayload(response.data);
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken);
-    }
     return getUserFromAuthPayload(response.data);
   } catch (error: unknown) {
     return rejectWithValue(getErrorMessage(error, "Login failed"));
