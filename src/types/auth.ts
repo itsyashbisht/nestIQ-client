@@ -45,3 +45,8 @@ export interface ForgotPasswordResponse {
   resetToken: string;
   expiresAt: string;
 }
+
+export interface LoginResponse {
+  user: IUser;
+  accessToken: string;
+}
