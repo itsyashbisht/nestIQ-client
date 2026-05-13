@@ -17,7 +17,6 @@ const CAT_COLOR: Record<string, string> = {
 };
 
 export default function HotelOptionCards({ hotels, onSelect }: Props) {
-  // Support both `hotels` directly and `hotels.hotels` (API shape variations)
   const list: HotelCard[] =
     (Array.isArray(hotels) ? hotels : (hotels as any).hotels) ?? [];
 
