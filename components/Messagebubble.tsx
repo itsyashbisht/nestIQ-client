@@ -5,6 +5,7 @@ import { Sparkles } from "lucide-react";
 import {
   type HotelCard,
   parseConciergeMessage,
+  RoomCard,
 } from "@/lib/parseConciergeMessage";
 import HotelOptionCards from "./HotelOptionCard";
 import RoomOptionCards from "./RoomOptionCards";
@@ -18,10 +19,17 @@ interface Message {
 interface Props {
   message: Message;
   onHotelSelect: (hotel: HotelCard) => void;
+  onRoomSelect: (room: RoomCard, hotelSlug?: string) => void;
+  onBookingLink?: (link: string) => void;
 }
 
-export default function MessageBubble({ message, onHotelSelect }: Props) {
-  // ── User bubble ────────────────────────────────────────────────────────────
+export default function MessageBubble({
+  message,
+  onHotelSelect,
+  onRoomSelect,
+  onBookingLink,
+}: Props) {
+  // ── User ───────────────────────────────────────────────────────────────────
   if (message.role === "user") {
     return (
       <motion.div
@@ -31,12 +39,12 @@ export default function MessageBubble({ message, onHotelSelect }: Props) {
         className="flex justify-end"
       >
         <div
-          className="max-w-[78%] sm:max-w-[72%] px-3.5 py-2.5 rounded-2xl text-[13px] sm:text-[14px] leading-relaxed whitespace-pre-wrap break-words"
+          className="max-w-[80%] sm:max-w-[72%] px-4 py-3 rounded-2xl text-[14px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words"
           style={{
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(214,235,253,0.16)",
-            color: "#e8e8e8",
-            borderBottomRightRadius: 4,
+            background: "rgba(255,255,255,0.07)",
+            border: "1px solid rgba(214,235,253,0.18)",
+            color: "#eaeaea",
+            borderBottomRightRadius: 5,
           }}
         >
           {message.content}
@@ -45,7 +53,7 @@ export default function MessageBubble({ message, onHotelSelect }: Props) {
     );
   }
 
-  // ── Assistant bubble — parse structured parts ──────────────────────────────
+  // ── Assistant ──────────────────────────────────────────────────────────────
   const parts = parseConciergeMessage(message.content);
 
   return (
@@ -53,39 +61,38 @@ export default function MessageBubble({ message, onHotelSelect }: Props) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
-      className="flex justify-start gap-2.5"
+      className="flex justify-start gap-3"
     >
       {/* Avatar */}
       <div
-        className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+        className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
         style={{
-          background: "rgba(59,158,255,0.12)",
-          border: "1px solid rgba(59,158,255,0.18)",
+          background: "rgba(59,158,255,0.14)",
+          border: "1px solid rgba(59,158,255,0.22)",
         }}
       >
-        <Sparkles size={12} className="text-[#3b9eff]" />
+        <Sparkles size={14} className="text-[#3b9eff]" />
       </div>
 
-      {/* Content parts */}
-      <div className="flex flex-col gap-2 min-w-0 max-w-[84%] sm:max-w-[80%]">
+      {/* Parts */}
+      <div className="flex flex-col gap-2.5 min-w-0 max-w-[85%] sm:max-w-[80%]">
         {parts.map((part, i) => {
           if (part.type === "text") {
             return (
               <div
                 key={i}
-                className="px-3.5 py-2.5 rounded-2xl text-[13px] sm:text-[14px] leading-relaxed whitespace-pre-wrap break-words"
+                className="px-4 py-3 rounded-2xl text-[14px] sm:text-[15px] leading-relaxed whitespace-pre-wrap break-words"
                 style={{
-                  background: "rgba(59,158,255,0.06)",
-                  border: "1px solid rgba(59,158,255,0.14)",
-                  color: "#e8e8e8",
-                  borderBottomLeftRadius: 4,
+                  background: "rgba(59,158,255,0.07)",
+                  border: "1px solid rgba(59,158,255,0.16)",
+                  color: "#eaeaea",
+                  borderBottomLeftRadius: 5,
                 }}
               >
                 {part.content}
               </div>
             );
           }
-
           if (part.type === "hotels") {
             return (
               <HotelOptionCards
@@ -95,15 +102,27 @@ export default function MessageBubble({ message, onHotelSelect }: Props) {
               />
             );
           }
-
           if (part.type === "rooms") {
             return (
               <RoomOptionCards
                 key={i}
                 rooms={part.rooms}
+                onSelect={onRoomSelect}
                 hotelName={part.hotelName}
                 hotelSlug={part.hotelSlug}
               />
+            );
+          }
+
+          if (part.type === "bookingLink") {
+            return (
+              <button
+                key={i}
+                onClick={() => onBookingLink?.(part.link)}
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl text-[14px] font-medium text-white bg-[#ff801f] hover:bg-[#ff9f4f] transition-colors"
+              >
+                Book Now →
+              </button>
             );
           }
 
